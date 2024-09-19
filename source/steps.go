@@ -3,24 +3,15 @@ package main
 import "fmt"
 
 func reserveHotel() error {
-	fmt.Println("Reserva de hotel realizada.")
+	fmt.Println("Reserva de hotel realizada. 💜")
 	return nil
 }
 
 func cancelHotel() {
-	fmt.Println("Reserva de hotel cancelada.")
+	fmt.Println("Reserva de hotel cancelada. 😭💔")
 }
 
-func reserveCar() error {
-	fmt.Println("Reserva de carro realizada.")
-	return nil
-}
-
-func cancelCar() {
-	fmt.Println("Reserva de carro cancelada.")
-}
-
-func processSaga() {
+func runSteps() {
 	err := reserveFlight()
 	if err != nil {
 		cancelFlight()
@@ -34,14 +25,5 @@ func processSaga() {
 		return
 	}
 
-	err = reserveCar()
-	if err != nil {
-		cancelFlight()
-		cancelHotel()
-		cancelCar()
-	}
-}
-
-func runSteps() {
-	processSaga() // Executa a transação SAGA completa
+	fmt.Println("Todas as reservas realizadas com sucesso! 🎉")
 }

@@ -2,24 +2,24 @@ package main
 
 import "fmt"
 
+// Estrutura do SAGA
 type Saga struct {
-	steps         []func() error // Passos da transação
-	compensations []func()       // Operações compensatórias
+	steps         []func() error
+	compensations []func()
 }
 
-func New() *Saga {
-	return &Saga{}
-}
-
+// Adiciona um passo e sua compensação
 func (s *Saga) AddStep(step func() error, compensation func()) {
 	s.steps = append(s.steps, step)
 	s.compensations = append(s.compensations, compensation)
 }
 
+// Executa o SAGA
 func (s *Saga) Execute() error {
 	for i, step := range s.steps {
 		if err := step(); err != nil {
-			for j := i - 1; j >= 0; j-- { // Desfazer etapas anteriores
+			// Executa as compensações em caso de erro
+			for j := i - 1; j >= 0; j-- {
 				s.compensations[j]()
 			}
 			return err
@@ -29,15 +29,14 @@ func (s *Saga) Execute() error {
 }
 
 func runManager() {
-	saga := New()
+	saga := &Saga{}
 
 	saga.AddStep(reserveFlight, cancelFlight)
 	saga.AddStep(reserveHotel, cancelHotel)
-	saga.AddStep(reserveCar, cancelCar)
 
 	if err := saga.Execute(); err != nil {
 		fmt.Println("Transação falhou:", err)
 	} else {
-		fmt.Println("Transação realizada com sucesso.")
+		fmt.Println("Todas as reservas realizadas com sucesso! 🎉")
 	}
 }
